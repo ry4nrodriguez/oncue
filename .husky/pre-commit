@@ -1,0 +1,10 @@
+pnpm biome check --staged --no-errors-on-unmatched
+biome_status=$?
+if [ "$biome_status" -ne 0 ]; then
+  exit "$biome_status"
+fi
+
+# The secret scan runs in Node because a PEM key's header and body sit on
+# separate lines, which a line-based `grep` cannot match together. The shapes
+# live in `apps/web/scripts/secret-patterns.mjs`, shared with the bundle scan.
+node apps/web/scripts/check-staged-secrets.mjs

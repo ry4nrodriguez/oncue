@@ -1,0 +1,55 @@
+[project]
+name = "oncue-sandbox-controller"
+version = "0.0.0"
+description = "OnCue's Modal sandbox controller: the provider half of the SandboxDriver boundary."
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+    # Pinned exactly, not floated. 1.5.5 deprecates a set of undocumented
+    # object APIs for removal in 1.6.0, and 1.6.0 makes MODAL_SANDBOX_V2 the
+    # default sandbox backend. Both are changes that would alter how a
+    # session's sandbox behaves without a line of OnCue code moving, so the
+    # version is a decision this repository makes rather than one a resolver
+    # makes for it.
+    "modal==1.5.5",
+    "fastapi>=0.115",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.27",
+    # Serves `app.py`'s `api` on a laptop for `pnpm controller`. A dev
+    # dependency, not a runtime one: the deployed controller is served by
+    # Modal's own ASGI host and never imports this.
+    "uvicorn>=0.30",
+    "pytest-cov>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The controller's modules sit at the project root rather than in a src
+# package, because the file Modal deploys is `app.py` and a deployment entry
+# point that has to be reached through a package prefix is one more thing to
+# get wrong at deploy time.
+pythonpath = ["."]
+asyncio_mode = "auto"
+# Coverage runs on every `pytest`, so `pnpm check` enforces the floor below.
+addopts = "--cov --cov-report=term-missing:skip-covered"
+
+[tool.coverage.run]
+branch = true
+source = ["."]
+# The tests themselves, and the live test C probe, which only runs against a
+# real sandbox.
+omit = ["tests/*", "scripts/*"]
+
+[tool.coverage.report]
+# Measured at 98 percent on 2026-09-25. What is left is Modal-only wiring
+# (`default_api`, `modal_api`, the deployed `fastapi_app`) that the fakes
+# replace by design, and two branches of the log reader.
+fail_under = 95

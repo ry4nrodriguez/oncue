@@ -1,0 +1,78 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same pull request or branch replaces a run in progress.
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # A full run takes about half an hour; a hung dev server should not hold a runner for GitHub's default six hours.
+    timeout-minutes: 60
+    # The Playwright image, so the end-to-end suite runs with the browsers and
+    # fonts Playwright expects.
+    container: mcr.microsoft.com/playwright:v1.62.1-noble
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # `pnpm check` runs the controller's pytest suite, which fails rather than
+      # skips without `uv`, and the Playwright image has none. Pinned to the
+      # version a developer machine resolves.
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/0.9.26/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run checks
+        run: pnpm check
+
+      # The broker tests present a real Clerk session to the real Worker, so
+      # this writes a signing key pair to the gitignored `.dev.vars` before the
+      # dev server starts. Without it they fail rather than skip, on purpose.
+      - name: Provision the local key pair the broker tests sign with
+        run: node apps/web/e2e/setup-local-auth.mjs
+
+      # The walkthrough test's controller double runs the real bridge, which
+      # runs a real OpenCode as the same user via `local-supervisor.ts` (the
+      # Unix-user boundary exists only in the Modal image). Pinned to
+      # `OPENCODE_VERSION` in `services/bridge/src/opencode.ts`.
+      # `ONCUE_OPENCODE_BIN` follows this container's actual `$HOME`.
+      - name: Install OpenCode
+        run: |
+          curl -fsSL https://opencode.ai/install | VERSION=1.18.30 bash
+          "$HOME/.opencode/bin/opencode" --version
+          echo "ONCUE_OPENCODE_BIN=$HOME/.opencode/bin/opencode" >> "$GITHUB_ENV"
+
+      - name: Run end-to-end tests
+        run: pnpm test:e2e
+
+      # Screenshots and error context for whatever failed, so a failure on
+      # Linux can be read without reproducing it.
+      - name: Keep the failed tests' output
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: e2e-test-results
+          path: apps/web/e2e/test-results/
+          retention-days: 7
+          if-no-files-found: ignore

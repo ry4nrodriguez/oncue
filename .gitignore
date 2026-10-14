@@ -1,0 +1,51 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+*.pem
+*.key
+
+# JavaScript and TypeScript
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+*.tsbuildinfo
+test-results/
+playwright-report/
+blob-report/
+
+# Cloudflare
+.wrangler/
+worker-configuration.d.ts
+# One deployment's own resources, and the Wrangler config generated from them.
+apps/web/deployment.json
+apps/web/wrangler.hosted.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+
+# Logs and temporary files
+*.log
+tmp/
+.cache/
+
+# Local agent configuration
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Operating systems and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+.audit/

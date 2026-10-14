@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in OnCue does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not report a security vulnerability here. Use the Security tab's "Report a vulnerability" (see SECURITY.md).
+        Never paste a credential, token, private key, or the contents of `.dev.vars` into an issue. Redact logs first.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did it happen?
+      options:
+        - Local stack (pnpm dev or pnpm dev:fresh)
+        - My own deployment (Cloudflare, Modal)
+        - Checks or tests (pnpm check, pnpm test:e2e)
+        - Self-hosting guide or other documentation
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did
+      description: Steps someone else can follow.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Error text or log lines, redacted.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: Output of `git rev-parse --short HEAD`.
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node version, browser, and coding agent if relevant.

@@ -1,0 +1,44 @@
+{
+  "name": "oncue",
+  "private": true,
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "node scripts/dev.mjs doubles",
+    "dev:fresh": "node scripts/dev.mjs fresh",
+    "dev:modal": "node scripts/dev.mjs modal",
+    "dev:real": "node scripts/dev.mjs real",
+    "dev:live": "node scripts/dev.mjs live",
+    "controller": "node scripts/controller.mjs",
+    "build": "pnpm --filter @oncue/web build",
+    "check": "node scripts/check.mjs",
+    "test": "pnpm -r test",
+    "test:e2e": "pnpm --filter @oncue/web test:e2e",
+    "test:perf": "pnpm --filter @oncue/web test:perf",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "typecheck": "pnpm -r typecheck",
+    "db:migrate:local": "pnpm --filter @oncue/web db:migrate:local",
+    "deploy:hosted": "node scripts/deploy-hosted.mjs",
+    "wrangler:hosted": "node scripts/wrangler-hosted.mjs",
+    "prepare": "husky",
+    "check-records": "pnpm --filter @oncue/protocol check-records",
+    "check-fixtures": "pnpm --filter @oncue/protocol check-fixtures",
+    "bench": "pnpm --filter @oncue/protocol bench",
+    "clerk:jwt-key": "node scripts/fetch-clerk-jwt-key.mjs"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.11",
+    "husky": "9.1.7",
+    "typescript": "7.0.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd"
+    ]
+  }
+}

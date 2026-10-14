@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "lib": ["ES2023"],
+    "moduleResolution": "Bundler",
+    "types": ["node"],
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "e2e/playwright.config.ts",
+    "e2e/lane-auth.ts",
+    "e2e/app-origin.ts",
+    "e2e/local-d1.ts",
+    "e2e/local-d1.test.ts",
+    "e2e/cascade-delete.ts",
+    "e2e/cascade-delete.test.ts",
+    "e2e/same-checkout.ts",
+    "e2e/app-origin.test.ts",
+    "vite-plugins/**/*.ts"
+  ]
+}

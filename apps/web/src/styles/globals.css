@@ -1,0 +1,173 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* Aliases for older components. New code uses the semantic names in tokens.css. */
+@theme inline {
+  --color-background: var(--canvas);
+  --color-foreground: var(--text);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--text);
+}
+
+/* A text shimmer for "this is happening now": a highlight sweeps left to right
+   every two seconds. Pure CSS, so it uses the element's `currentColor`, reads
+   in both themes, and stops under reduced motion. `background-clip: text`
+   needs a transparent fill, so the text colour is the second, solid gradient
+   layer. */
+@property --shimmer-spread {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 60px;
+}
+/* One period exactly. The highlight tile is twice the element's width,
+   repeated along x, and a position p puts its left edge at -p of the width,
+   so 200% -> 0% moves it by one whole tile and the loop has no seam.
+   `scripts/shimmer-css.test.mjs` pins the arithmetic. */
+@keyframes shimmer-sweep {
+  from {
+    background-position:
+      200% 0,
+      0 0;
+  }
+  to {
+    background-position:
+      0% 0,
+      0 0;
+  }
+}
+@utility shimmer {
+  background-image:
+    linear-gradient(
+      110deg,
+      transparent calc(50% - min(var(--shimmer-spread), 20%)),
+      color-mix(in oklab, currentColor, var(--canvas) 70%) 50%,
+      transparent calc(50% + min(var(--shimmer-spread), 20%))
+    ),
+    linear-gradient(currentColor, currentColor);
+  background-size:
+    200% 100%,
+    auto;
+  /* The spread is capped at a fifth of the tile so its edges stay transparent
+     on narrow text and tiles meet without a seam. */
+  background-repeat: repeat-x, no-repeat;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-sweep 2s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* The sidebar's working mark is a 3 by 3 dot matrix. Every outer dot runs this
+   with its own delay (`features/home/status-matrix.ts`), so a three-dot trail
+   steps round them, 120 ms a dot. Reduced motion holds the first frame, which
+   each dot carries as its own opacity. */
+@keyframes status-matrix {
+  0% {
+    opacity: 1;
+  }
+  12.5% {
+    opacity: 0.7;
+  }
+  25% {
+    opacity: 0.45;
+  }
+  37.5%,
+  100% {
+    opacity: 0.22;
+  }
+}
+@utility status-matrix-dot {
+  animation: status-matrix 960ms step-end infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .status-matrix-dot {
+    animation: none;
+  }
+}
+/*
+ * A mark that ships one variant per background (OpenCode's, in
+ * `components/brand/icons.tsx`) draws both; the theme shows one.
+ */
+[data-theme="dark"] .oncue-mark-light,
+:root:not([data-theme="dark"]) .oncue-mark-dark {
+  display: none;
+}
+
+/* A thin inset pill scrollbar with no track, on every element (the timeline's
+   scroller belongs to a library and takes no class of ours). The standard
+   properties cover Firefox; `::-webkit-scrollbar` covers Chrome and Safari,
+   which need it for the inset. `.scroll-pill` only names scrolling regions. */
+*,
+.scroll-pill {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+*::-webkit-scrollbar,
+.scroll-pill::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track,
+.scroll-pill::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb,
+.scroll-pill::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 9999px;
+  /* A transparent border with background-clip insets the pill within the gutter. */
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover,
+.scroll-pill::-webkit-scrollbar-thumb:hover {
+  background-color: var(--hover-strong);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/*
+ * A table in an answer reads as text, not a widget (record 13): Streamdown's
+ * wrapper box and toolbar are dropped and rows are separated by a hairline.
+ */
+[data-streamdown="table-wrapper"] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow-x: auto;
+}
+[data-streamdown="table"] {
+  width: 100%;
+  border-collapse: collapse;
+}
+[data-streamdown="table-header-cell"],
+[data-streamdown="table-cell"] {
+  padding: 0.375rem 0.75rem 0.375rem 0;
+  border-bottom: 1px solid var(--color-border-soft);
+  vertical-align: top;
+}
+[data-streamdown="table-header-cell"] {
+  color: var(--color-muted-foreground);
+  font-weight: 500;
+}

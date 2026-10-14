@@ -1,0 +1,70 @@
+// The local environment only. A deployment's database, bucket, and Clerk key
+// live in the gitignored `deployment.json`, and `scripts/hosted-config.mjs`
+// joins the two into the config a hosted deploy uses, so deploying never
+// means editing this file.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "oncue-web",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-08-22",
+  "compatibility_flags": ["nodejs_compat"],
+  // Every path except "/" is a client-side route with no file behind it, so
+  // without `not_found_handling` a deployed Worker answers 404 on a browser
+  // navigation to one (Vite's dev server hides this). `run_worker_first`
+  // sends API and WebSocket paths to the Worker. A named environment
+  // inherits `assets`.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/ws/*"]
+  },
+  "vars": {
+    "ONCUE_ENV": "local",
+    "ONCUE_RELEASE": "dev",
+    // Blank here: `.dev.vars` supplies the key, generated for the local
+    // doubles or your own Clerk application's. Without one every request is
+    // unauthenticated.
+    "CLERK_JWT_KEY": "",
+    "ONCUE_USER_ALLOWLIST": ""
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "oncue-local",
+      "database_id": "local-placeholder-db-id"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ARTIFACTS",
+      "bucket_name": "oncue-local-artifacts"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SESSION",
+        "class_name": "SessionObject"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["SessionObject"]
+    }
+  ],
+  // Workers Logs. The incident rule's alert is a log line, so sampling is 1:
+  // a dropped line is a dropped alert. A named environment inherits it.
+  "observability": { "enabled": true, "head_sampling_rate": 1 },
+  // The stuck-session sweep: `scheduled()` in `worker/index.ts` deletes
+  // `session_index` rows left in `creating` for over an hour (record 03), so a
+  // stuck row lives at most an hour and five minutes. It wakes no Durable
+  // Object and reads through the partial index
+  // `idx_session_index_creating_sweep`, deleting at most `CREATING_SWEEP_BATCH`
+  // rows (see "Read cost" in docs/architecture/01-control-plane.md).
+  // The hosted config copies it (`scripts/hosted-config.mjs`), and
+  // `scripts/wrangler-config.test.mjs` pins both.
+  "triggers": { "crons": ["*/5 * * * *"] }
+}

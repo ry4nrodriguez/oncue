@@ -1,0 +1,818 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "opencode",
+    "version": "1.0.0",
+    "description": "opencode api"
+  },
+  "x-oncue": {
+    "note": "Extract of GET /doc from OpenCode 1.18.30 on 2026-09-11: the Config and permission schemas the bridge's contract tests read. Refresh from the new server's /doc on every runtime upgrade."
+  },
+  "components": {
+    "schemas": {
+      "Config": {
+        "type": "object",
+        "properties": {
+          "$schema": {
+            "type": "string"
+          },
+          "shell": {
+            "type": "string"
+          },
+          "logLevel": {
+            "$ref": "#/components/schemas/LogLevel"
+          },
+          "server": {
+            "$ref": "#/components/schemas/ServerConfig"
+          },
+          "command": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "template": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "agent": {
+                  "type": "string"
+                },
+                "model": {
+                  "type": "string"
+                },
+                "variant": {
+                  "type": "string"
+                },
+                "subtask": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["template"],
+              "additionalProperties": false
+            }
+          },
+          "skills": {
+            "type": "object",
+            "properties": {
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "urls": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "references": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfigV2ReferenceGit"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfigV2ReferenceLocal"
+                }
+              ]
+            }
+          },
+          "reference": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfigV2ReferenceGit"
+                },
+                {
+                  "$ref": "#/components/schemas/ConfigV2ReferenceLocal"
+                }
+              ]
+            }
+          },
+          "watcher": {
+            "type": "object",
+            "properties": {
+              "ignore": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "snapshot": {
+            "type": "boolean"
+          },
+          "plugin": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object"
+                    }
+                  ],
+                  "maxItems": 2,
+                  "minItems": 2
+                }
+              ]
+            }
+          },
+          "share": {
+            "type": "string",
+            "enum": ["manual", "auto", "disabled"]
+          },
+          "autoshare": {
+            "type": "boolean"
+          },
+          "autoupdate": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "enum": ["notify"]
+              }
+            ],
+            "description": "Automatically update to the latest version. Set to true to auto-update, false to disable, or 'notify' to show update notifications"
+          },
+          "disabled_providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "enabled_providers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "model": {
+            "type": "string"
+          },
+          "small_model": {
+            "type": "string"
+          },
+          "default_agent": {
+            "type": "string"
+          },
+          "subagent_depth": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "username": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "object",
+            "properties": {
+              "build": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "plan": {
+                "$ref": "#/components/schemas/AgentConfig"
+              }
+            },
+            "additionalProperties": {
+              "$ref": "#/components/schemas/AgentConfig"
+            }
+          },
+          "agent": {
+            "type": "object",
+            "properties": {
+              "plan": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "build": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "general": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "explore": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "title": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "summary": {
+                "$ref": "#/components/schemas/AgentConfig"
+              },
+              "compaction": {
+                "$ref": "#/components/schemas/AgentConfig"
+              }
+            },
+            "additionalProperties": {
+              "$ref": "#/components/schemas/AgentConfig"
+            }
+          },
+          "provider": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ProviderConfig"
+            }
+          },
+          "mcp": {
+            "type": "object",
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/McpLocalConfig"
+                },
+                {
+                  "$ref": "#/components/schemas/McpRemoteConfig"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": ["enabled"],
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "formatter": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "disabled": {
+                      "type": "boolean"
+                    },
+                    "command": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "environment": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "extensions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            ],
+            "description": "Enable or configure formatters. Omit or set to false to disable, true to enable built-ins, or an object to enable built-ins with overrides."
+          },
+          "lsp": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "disabled": {
+                          "type": "boolean",
+                          "enum": [true]
+                        }
+                      },
+                      "required": ["disabled"],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "command": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "extensions": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "disabled": {
+                          "type": "boolean"
+                        },
+                        "env": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "string"
+                          }
+                        },
+                        "initialization": {
+                          "type": "object"
+                        }
+                      },
+                      "required": ["command"],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            ],
+            "description": "Enable or configure LSP servers. Omit or set to false to disable, true to enable built-ins, or an object to enable built-ins with overrides."
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "layout": {
+            "$ref": "#/components/schemas/LayoutConfig"
+          },
+          "permission": {
+            "$ref": "#/components/schemas/PermissionConfig"
+          },
+          "tools": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            }
+          },
+          "attachment": {
+            "$ref": "#/components/schemas/AttachmentConfig"
+          },
+          "enterprise": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "tool_output": {
+            "type": "object",
+            "properties": {
+              "max_lines": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "max_bytes": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "compaction": {
+            "type": "object",
+            "properties": {
+              "auto": {
+                "type": "boolean"
+              },
+              "prune": {
+                "type": "boolean"
+              },
+              "tail_turns": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "preserve_recent_tokens": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "reserved": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          },
+          "experimental": {
+            "type": "object",
+            "properties": {
+              "disable_paste_summary": {
+                "type": "boolean"
+              },
+              "batch_tool": {
+                "type": "boolean"
+              },
+              "openTelemetry": {
+                "type": "boolean"
+              },
+              "primary_tools": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "continue_loop_on_deny": {
+                "type": "boolean"
+              },
+              "mcp_timeout": {
+                "type": "integer",
+                "exclusiveMinimum": 0
+              },
+              "policies": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ConfigV2ExperimentalPolicy"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "PermissionConfig": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/PermissionActionConfig"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "read": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "edit": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "glob": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "grep": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "list": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "bash": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "task": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "external_directory": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "todowrite": {
+                "$ref": "#/components/schemas/PermissionActionConfig"
+              },
+              "question": {
+                "$ref": "#/components/schemas/PermissionActionConfig"
+              },
+              "webfetch": {
+                "$ref": "#/components/schemas/PermissionActionConfig"
+              },
+              "websearch": {
+                "$ref": "#/components/schemas/PermissionActionConfig"
+              },
+              "lsp": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              },
+              "doom_loop": {
+                "$ref": "#/components/schemas/PermissionActionConfig"
+              },
+              "skill": {
+                "$ref": "#/components/schemas/PermissionRuleConfig"
+              }
+            },
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PermissionRuleConfig"
+            }
+          }
+        ]
+      },
+      "PermissionActionConfig": {
+        "type": "string",
+        "enum": ["ask", "allow", "deny"]
+      },
+      "PermissionRuleConfig": {
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/PermissionActionConfig"
+          },
+          {
+            "$ref": "#/components/schemas/PermissionObjectConfig"
+          }
+        ]
+      },
+      "PermissionObjectConfig": {
+        "type": "object",
+        "additionalProperties": {
+          "$ref": "#/components/schemas/PermissionActionConfig"
+        }
+      },
+      "ProviderConfig": {
+        "type": "object",
+        "properties": {
+          "api": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "env": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "npm": {
+            "type": "string"
+          },
+          "whitelist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blacklist": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "baseURL": {
+                "type": "string"
+              },
+              "enterpriseUrl": {
+                "type": "string"
+              },
+              "setCacheKey": {
+                "type": "boolean"
+              },
+              "timeout": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  {
+                    "type": "boolean",
+                    "enum": [false]
+                  }
+                ],
+                "description": "Timeout in milliseconds for full requests to this provider. Set to false to disable timeout."
+              },
+              "headerTimeout": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  {
+                    "type": "boolean",
+                    "enum": [false]
+                  }
+                ],
+                "description": "Timeout in milliseconds to wait for response headers (default: 300000). Set to false to disable timeout."
+              },
+              "chunkTimeout": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "exclusiveMinimum": 0
+                  },
+                  {
+                    "type": "boolean",
+                    "enum": [false]
+                  }
+                ],
+                "description": "Timeout in milliseconds between streamed SSE chunks for this provider (default: 300000). If no chunk arrives within this window, the request is aborted. Set to false to disable timeout."
+              }
+            },
+            "additionalProperties": {}
+          },
+          "models": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "family": {
+                  "type": "string"
+                },
+                "release_date": {
+                  "type": "string"
+                },
+                "attachment": {
+                  "type": "boolean"
+                },
+                "reasoning": {
+                  "type": "boolean"
+                },
+                "temperature": {
+                  "type": "boolean"
+                },
+                "tool_call": {
+                  "type": "boolean"
+                },
+                "interleaved": {
+                  "anyOf": [
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "string",
+                      "enum": ["reasoning", "reasoning_content", "reasoning_text"]
+                    },
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "field": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": ["reasoning", "reasoning_content", "reasoning_text"]
+                            },
+                            {
+                              "type": "string"
+                            }
+                          ]
+                        }
+                      },
+                      "required": ["field"],
+                      "additionalProperties": false
+                    }
+                  ]
+                },
+                "cost": {
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "number"
+                    },
+                    "output": {
+                      "type": "number"
+                    },
+                    "cache_read": {
+                      "type": "number"
+                    },
+                    "cache_write": {
+                      "type": "number"
+                    },
+                    "context_over_200k": {
+                      "type": "object",
+                      "properties": {
+                        "input": {
+                          "type": "number"
+                        },
+                        "output": {
+                          "type": "number"
+                        },
+                        "cache_read": {
+                          "type": "number"
+                        },
+                        "cache_write": {
+                          "type": "number"
+                        }
+                      },
+                      "required": ["input", "output"],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": ["input", "output"],
+                  "additionalProperties": false
+                },
+                "limit": {
+                  "type": "object",
+                  "properties": {
+                    "context": {
+                      "type": "number"
+                    },
+                    "input": {
+                      "type": "number"
+                    },
+                    "output": {
+                      "type": "number"
+                    }
+                  },
+                  "required": ["context", "output"],
+                  "additionalProperties": false
+                },
+                "modalities": {
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": ["text", "audio", "image", "video", "pdf"]
+                      }
+                    },
+                    "output": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": ["text", "audio", "image", "video", "pdf"]
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "experimental": {
+                  "type": "boolean"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["alpha", "beta", "deprecated", "active"]
+                },
+                "provider": {
+                  "type": "object",
+                  "properties": {
+                    "npm": {
+                      "type": "string"
+                    },
+                    "api": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "options": {
+                  "type": "object"
+                },
+                "headers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "variants": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "disabled": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": {}
+                  },
+                  "description": "Variant-specific configuration"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -1,0 +1,196 @@
+/*
+ * Semantic tokens shared by the light and dark themes (record 13). Values live
+ * on :root and [data-theme="dark"] so the theme switches at runtime, and
+ * `@theme inline` maps them onto Tailwind utilities (`bg-panel`). Components
+ * should not carry literal colours; nothing in the build enforces this.
+ */
+
+:root {
+  color-scheme: light;
+
+  --canvas: #ffffff;
+  /* The sidebar and side panel are the same surface as the conversation;
+     the hairline between them is the only divider. */
+  --panel: var(--canvas);
+  --composer: rgb(255 255 255 / 95%);
+  --strip: #fafafa;
+  --card: rgb(255 255 255 / 85%);
+  --surface: #fafafa;
+  --popover: #ffffff;
+
+  --border: #e5e5e5;
+  --border-soft: #efefef;
+
+  --text: #171717;
+  --muted: #737373;
+  --faint: #767676;
+
+  --hover: #f5f5f5;
+  --hover-strong: #e8e8e8;
+
+  --track: #f5f5f5;
+  --track-fill: #d4d4d4;
+  /* The chosen segment of a row of choices, raised above the track. */
+  --thumb: #ffffff;
+  --avatar: #d4d4d4;
+
+  /* `accent` is the brand fill behind non-text marks (3.45:1). `accent-text`
+     is darkened to clear 4.5:1 as small text on the canvas and as a fill
+     under white text (record 13's contrast targets). */
+  --accent: #f5520c;
+  --accent-text: #c2410c;
+  --accent-soft: rgb(245 82 12 / 8%);
+  --mark-from: #ff9f45;
+  --mark-to: #f5520c;
+
+  --button: #1c1c1b;
+  --button-text: #ffffff;
+
+  --positive: #357a38;
+  --caution: #a16207;
+  --danger: #c4362b;
+
+  /* The sidebar's "needs you" dot: the dark theme's yellow, deepened to
+     3.2:1 on white. */
+  --attention: #b58a00;
+  /* The sidebar's "finished and not opened" dot (4.5:1 on white). */
+  --finished: #2f6fed;
+
+  --chart-1: #e9a13b;
+  --chart-2: #e2683c;
+  --chart-3: #b23f2e;
+
+  /* The context meter's parts: the conversation in blue, the rest distinct from it and each other. */
+  --meter-conversation: #2f6fed;
+  --meter-system: #8b5cf6;
+  --meter-tools: #0f9488;
+  --meter-oncue: #d97706;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #151515;
+  --panel: var(--canvas);
+  --composer: rgb(32 32 31 / 95%);
+  --strip: #1a1a19;
+  --card: rgb(27 27 26 / 88%);
+  --surface: #1b1b1a;
+  --popover: #20201f;
+
+  --border: #2c2c2a;
+  --border-soft: #232322;
+
+  --text: #ededec;
+  --muted: #8c8c88;
+  --faint: #8a8a85;
+
+  --hover: #262625;
+  --hover-strong: #2e2e2c;
+
+  --track: #262625;
+  --track-fill: #3c3c39;
+  /* Lighter than the track, so the chosen segment reads as raised here too. */
+  --thumb: #3a3a38;
+  --avatar: #3a3a38;
+
+  --accent: #f5520c;
+  --accent-text: #ff7a3d;
+  --accent-soft: rgb(245 82 12 / 14%);
+  --mark-from: #ff9f45;
+  --mark-to: #f5520c;
+
+  --button: #ededec;
+  --button-text: #151515;
+
+  --positive: #5fbf63;
+  --caution: #e0a93e;
+  --danger: #e5695c;
+
+  --attention: #f2c230;
+  --finished: #5b9dff;
+
+  --chart-1: #e9a13b;
+  --chart-2: #e2683c;
+  --chart-3: #b23f2e;
+
+  --meter-conversation: #5b8def;
+  --meter-system: #a78bfa;
+  --meter-tools: #2dd4bf;
+  --meter-oncue: #f59e0b;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-composer: var(--composer);
+  --color-strip: var(--strip);
+  --color-card: var(--card);
+  --color-surface: var(--surface);
+  --color-popover: var(--popover);
+
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+
+  --color-text: var(--text);
+  /*
+   * Note the shadcn convention: `muted` is a surface and `muted-foreground` is
+   * the text on it. Our raw token named --muted is text, so it maps to
+   * muted-foreground. Components should write text-muted-foreground, never
+   * text-muted.
+   */
+  --color-muted: var(--surface);
+  --color-muted-foreground: var(--muted);
+  --color-faint: var(--faint);
+
+  --color-hover: var(--hover);
+  --color-hover-strong: var(--hover-strong);
+
+  --color-track: var(--track);
+  --color-track-fill: var(--track-fill);
+  --color-thumb: var(--thumb);
+  --color-avatar: var(--avatar);
+
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-soft: var(--accent-soft);
+  --color-mark-from: var(--mark-from);
+  --color-mark-to: var(--mark-to);
+
+  --color-button: var(--button);
+  --color-button-text: var(--button-text);
+
+  --color-positive: var(--positive);
+  --color-caution: var(--caution);
+  --color-attention: var(--attention);
+  --color-finished: var(--finished);
+  --color-danger: var(--danger);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+
+  --color-meter-conversation: var(--meter-conversation);
+  --color-meter-system: var(--meter-system);
+  --color-meter-tools: var(--meter-tools);
+  --color-meter-oncue: var(--meter-oncue);
+
+  /*
+   * shadcn's default token names, aliased onto ours. AI Elements and the
+   * Base UI primitives were written against these, so mapping them here keeps
+   * those files unedited and mergeable when they are updated upstream.
+   */
+  --color-background: var(--canvas);
+  --color-foreground: var(--text);
+  --color-card-foreground: var(--text);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--button);
+  --color-primary-foreground: var(--button-text);
+  --color-secondary: var(--hover);
+  --color-secondary-foreground: var(--text);
+  --color-accent-foreground: var(--text);
+  --color-destructive: var(--danger);
+  --color-destructive-foreground: var(--canvas);
+  --color-input: var(--border);
+  --color-ring: var(--accent);
+}

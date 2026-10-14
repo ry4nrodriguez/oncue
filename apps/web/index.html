@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OnCue</title>
+    <!--
+      Paints the page in the theme's canvas colour before the app's scripts
+      and styles arrive, so a dark-mode visitor sees no white frame before the
+      loading screen. The script resolves the theme the way `ThemeProvider`
+      does (the stored preference, else the system's) and sets the same
+      `data-theme` attribute `tokens.css` keys off, and the two colours are
+      that file's `--canvas` values (`src/lib/index-html.test.ts` holds them
+      equal). Nothing is drawn here: the loading screen is the first thing
+      shown.
+    -->
+    <style>
+      html {
+        color-scheme: light;
+        background-color: #ffffff;
+      }
+      html[data-theme="dark"] {
+        color-scheme: dark;
+        background-color: #151515;
+      }
+    </style>
+    <script>
+      (() => {
+        let preference = null;
+        try {
+          preference = window.localStorage.getItem("oncue.theme");
+        } catch {
+          // Blocked storage: fall back to the system's preference.
+        }
+        const dark =
+          preference === "dark" ||
+          (preference !== "light" &&
+            typeof window.matchMedia === "function" &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

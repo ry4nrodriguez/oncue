@@ -1,0 +1,16 @@
+{
+  "kind": "docs-derived, NOT a recording",
+  "writtenAt": "2026-09-27",
+  "piVersion": "0.87.1 (documentation only; no Pi binary produced any of these lines)",
+  "model": "none: no model and no Pi process were involved",
+  "sources": [
+    "@earendil-works/pi-coding-agent@0.87.1 docs/rpc.md",
+    "@earendil-works/pi-coding-agent@0.87.1 docs/rpc-commands.md",
+    "@earendil-works/pi-coding-agent@0.87.1 docs/json.md",
+    "@earendil-works/pi-coding-agent@0.87.1 docs/rpc-extension-ui.md",
+    "@earendil-works/pi-coding-agent@0.87.1 docs/message-types.md",
+    "@earendil-works/pi-coding-agent@0.87.1 dist/modes/rpc/rpc-types.d.ts"
+  ],
+  "contents": "Pi's stdout for one session as the documentation describes it: the get_state, set_thinking_level, and prompt responses; a turn with thinking, streamed text, and a bash call; a turn whose oncue_secret_request call OnCue's extension holds with an extension_ui_request; a closing text turn; a provider error Pi retries and recovers from; an abort; an extension_error; and a parse-failure response with no id. The held call's dialog is the shape pi-extension.ts asks for, not one Pi has been seen to send.",
+  "replaceWith": "A recording of the pinned Pi driven against the provider double or a real model, which spike S5 owes."
+}

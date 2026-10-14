@@ -1,0 +1,30 @@
+{
+  "name": "@oncue/protocol",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run --coverage",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.scripts.json",
+    "check-records": "tsx scripts/check-records.ts",
+    "check-fixtures": "tsx scripts/check-fixtures.ts",
+    "fixtures:write": "tsx scripts/write-fixtures.ts",
+    "bench": "tsx scripts/bench.ts"
+  },
+  "dependencies": {
+    "valibot": "1.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2",
+    "vitest": "4.1.11"
+  }
+}

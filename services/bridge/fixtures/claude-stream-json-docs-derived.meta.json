@@ -1,0 +1,12 @@
+{
+  "kind": "declaration-derived, NOT a recording",
+  "writtenAt": "2026-09-27",
+  "claudeCodeVersion": "2.1.283, as carried by @anthropic-ai/claude-agent-sdk 0.3.283 (declarations only; no Claude Code produced any of these lines)",
+  "model": "none: no model and no Claude Code process were involved",
+  "sources": [
+    "@anthropic-ai/claude-agent-sdk@0.3.283 sdk.d.ts: SDKMessage and its members, SDKPartialAssistantMessage, SDKResultSuccess and SDKResultError, SDKSystemMessage, SDKControlRequest, SDKControlResponse, SDKControlPermissionRequest, SDKControlCancelRequest, PermissionResult",
+    "Anthropic's Messages API streaming events, which SDKPartialAssistantMessage wraps"
+  ],
+  "contents": "Claude Code's stdout for one session as the declarations describe it: the initialize and get_binary_version responses; a turn with thinking, streamed text, a Bash call and its result, a TodoWrite plan, and a closing text; a turn whose secret_request asks through can_use_tool; an interrupted turn with a withdrawn ask; a failed turn after an API retry; a subagent's line; a hook callback the client refuses; and a system subtype nobody has seen. That Claude Code sends one assistant line per content block with the same message id is assumed from its documentation, not observed.",
+  "replaceWith": "fixtures/claude-session-recorded.jsonl, from scripts/record-claude-session.ts, which the operator runs (it starts Claude Code on the operator's machine against a scripted model); then spikes S1 and S2 with a real model."
+}
